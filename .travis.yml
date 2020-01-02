@@ -5,7 +5,6 @@ env:
     - GIMME_ARCH=386
 go:
   - 1.12
-  - 1.x
   - master
 os:
   - linux

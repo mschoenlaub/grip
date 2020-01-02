@@ -142,21 +142,24 @@ func (f stackFrames) String() string {
 	return strings.Join(out, " ")
 }
 
+func (f StackFrame) FunctionName() string {
+	funcNameParts := strings.Split(f.Function, ".")
+	var fname string
+	if len(funcNameParts) > 0 {
+		fname = funcNameParts[len(funcNameParts)-1]
+	} else {
+		fname = f.Function
+	}
+	return fname
+}
+
 func (f StackFrame) String() string {
 	if strings.HasPrefix(f.File, build.Default.GOPATH) {
-		funcNameParts := strings.Split(f.Function, ".")
-		var fname string
-		if len(funcNameParts) > 0 {
-			fname = funcNameParts[len(funcNameParts)-1]
-		} else {
-			fname = f.Function
-
-		}
 
 		return fmt.Sprintf("%s:%d (%s)",
 			f.File[len(build.Default.GOPATH)+5:],
 			f.Line,
-			fname)
+			f.FunctionName())
 	}
 
 	if strings.HasPrefix(f.File, build.Default.GOROOT) {
@@ -167,9 +170,11 @@ func (f StackFrame) String() string {
 
 	dir, fileName := filepath.Split(f.File)
 
-	return fmt.Sprintf("%s:%d",
+	return fmt.Sprintf("%s:%d (%s)",
 		filepath.Join(filepath.Base(dir), fileName),
-		f.Line)
+		f.Line,
+		f.FunctionName(),
+	)
 }
 
 func captureStack(skip int) []StackFrame {
@@ -189,9 +194,9 @@ func captureStack(skip int) []StackFrame {
 		if !ok {
 			break
 		}
-
+		f := runtime.FuncForPC(pc)
 		trace = append(trace, StackFrame{
-			Function: runtime.FuncForPC(pc).Name(),
+			Function: f.Name(),
 			File:     file,
 			Line:     line})
 

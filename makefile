@@ -2,31 +2,18 @@
 name := grip
 buildDir := build
 packages := recovery logging message send slogger $(name)
-orgPath := github.com/mongodb
+orgPath := github.com/mschoenlaub
 projectPath := $(orgPath)/$(name)
 # end project configuration
 
-# start linting configuration
-#   package, testing, and linter dependencies specified
-#   separately. This is a temporary solution: eventually we should
-#   vendorize all of these dependencies.
-lintDeps := github.com/alecthomas/gometalinter
+lintBin := ./bin/golangci-lint run
+
+
 #   include test files and give linters 40s to run to avoid timeouts
-lintArgs := --tests --deadline=1m --vendor
-#   gotype produces false positives because it reads .a files which
-#   are rarely up to date.
-lintArgs += --disable="gotype" --disable="gosec" --disable="gocyclo" --disable="aligncheck"
-lintArgs += --skip="$(buildDir)" --skip="buildscripts"
+lintArgs := --tests --deadline=1m
+lintArgs += --skip-dirs="$(buildDir)" --skip-dirs="buildscripts"
 #  add and configure additional linters
 lintArgs += --enable="goimports" --enable="misspell"
-lintArgs += --line-length=100 --dupl-threshold=175
-#  two similar functions triggered the duplicate warning, but they're not.
-lintArgs += --exclude="duplicate of registry.go"
-lintArgs += --exclude="don.t use underscores.*_DependencyState.*"
-lintArgs += --exclude="file is not goimported" # test files aren't imported
-#  golint doesn't handle splitting package comments between multiple files.
-lintArgs += --exclude="package comment should be of the form .Package .* \(golint\)"
-lintArgs += --exclude="error return value not checked \(defer.*"
 #  there are a lot of logging methods that don't have doc strings, and probably shouldn't
 lintArgs += --exclude="exported method Grip\..*should have comment or be unexported.*"
 lintArgs += --exclude="exported function (Catch|Log|Default|Emergency|Alert|Critical|Error|Warning|Notice|Info|Debug).* should have comment.*"
@@ -59,10 +46,8 @@ coverageHtmlOutput := $(foreach target,$(packages),$(buildDir)/output.$(target).
 $(gopath)/src/%:
 	@-[ ! -d $(gopath) ] && mkdir -p $(gopath) || true
 	go get $(subst $(gopath)/src/,,$@)
-$(buildDir)/run-linter:buildscripts/run-linter.go $(buildDir)/.lintSetup
-	go build -o $@ $<
 $(buildDir)/.lintSetup:$(lintDeps) $(buildDir)
-	@-$(gopath)/bin/gometalinter --install >/dev/null && touch $@
+	@-curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.21.0 && touch $@
 # end dependency installation tools
 
 
@@ -149,10 +134,10 @@ $(buildDir)/output.$(name).race: .FORCE
 	@mkdir -p $(buildDir)
 	go test -race $(testArgs) ./ 2>&1 | tee $@
 #  targets to generate gotest output from the linter.
-$(buildDir)/output.%.lint:$(buildDir)/run-linter $(testSrcFiles) .FORCE
-	@./$< --output=$@ --lintArgs='$(lintArgs)' --packages='$*'
-$(buildDir)/output.lint:$(buildDir)/run-linter .FORCE
-	@./$< --output="$@" --lintArgs='$(lintArgs)' --packages="$(packages)"
+$(buildDir)/output.%.lint:$(buildDir)/.lintSetup $(testSrcFiles) .FORCE
+	@./$(lintBin) $(lintArgs) --skip-dirs='(^|/)$*($|/)' > $@
+$(buildDir)/output.lint:$(buildDir)/.lintSetup .FORCE
+	@./$(lintBin) $(lintArgs) > $@
 #  targets to process and generate coverage reports
 $(buildDir)/output.%.coverage: .FORCE $(coverDeps)
 	@mkdir -p $(buildDir)
@@ -162,22 +147,6 @@ $(buildDir)/output.%.coverage.html:$(buildDir)/output.%.coverage $(coverDeps)
 	@mkdir -p $(buildDir)
 	go tool cover -html=$< -o $@
 # end test and coverage artifacts
-
-
-# start vendoring configuration
-#    begin with configuration of dependencies
-vendor-clean:
-	rm -rf vendor/github.com/mattn/go-xmpp/_example/
-	rm -rf vendor/github.com/bluele/slack/examples/
-	sed -ri 's%(\tlog.*)%// \1%g' `find vendor/github.com/nutmegdevelopment/sumologic/upload/upload.go`
-	sed -ri 's/json:"(.*)"/json:"\1" bson:"\1,omitempty"/' `grep -R -l 'json:\".*\" [^bson]' vendor/github.com/shirou/gopsutil/*` || true
-	find vendor/ -name "*.go" | xargs gofmt -w -r '"golang.org/x/net/context" -> "context"'
-	find vendor/github.com/shirou/gopsutil/ -name "*.go" | xargs -n 1 gofmt -w || true
-	find vendor/ -name "*.gif" -o -name "*.gz" -o -name "*.png" -o -name "*.ico" -o -name "*.dat" -o -name "*testdata" | xargs rm -fr
-#   add phony targets
-phony += vendor-clean
-# end vendoring tooling configuration
-
 
 # clean and other utility targets
 clean:

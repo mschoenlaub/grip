@@ -4,10 +4,10 @@ env:
     - GIMME_ARCH=amd64
     - GIMME_ARCH=386
 go:
-  - 1.4
-  - 1.6
-  - 1.7
+  - 1.12
+  - 1.x
+  - master
 os:
   - linux
   - osx
-script: make vendor test
+script: make test

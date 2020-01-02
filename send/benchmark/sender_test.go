@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mongodb/grip"
+	"github.com/mschoenlaub/grip"
 )
 
 const maxBenchTime = 1 * time.Minute

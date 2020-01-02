@@ -1,6 +1,6 @@
 package slogger
 
-import "github.com/mongodb/grip/level"
+import "github.com/mschoenlaub/grip/level"
 
 // Level represents slogger's level types. In the original
 // implementation there are four levels and an "OFF" value.

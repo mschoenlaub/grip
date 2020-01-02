@@ -3,7 +3,7 @@ package message
 import (
 	"fmt"
 
-	"github.com/mongodb/grip/level"
+	"github.com/mschoenlaub/grip/level"
 )
 
 type formatMessenger struct {

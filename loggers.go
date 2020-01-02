@@ -24,7 +24,7 @@ functionality. You must pass printf/println-style arguments to these methods.
 */
 package grip
 
-import "github.com/mongodb/grip/level"
+import "github.com/mschoenlaub/grip/level"
 
 func Log(l level.Priority, msg interface{}) {
 	std.Log(l, msg)

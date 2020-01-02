@@ -1,8 +1,8 @@
 package grip
 
 import (
-	"github.com/mongodb/grip/level"
-	"github.com/mongodb/grip/send"
+	"github.com/mschoenlaub/grip/level"
+	"github.com/mschoenlaub/grip/send"
 )
 
 // Journaler describes the public interface of the the Grip

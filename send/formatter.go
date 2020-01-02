@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/mongodb/grip/message"
+	"github.com/mschoenlaub/grip/message"
 )
 
 const (

@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mongodb/grip/level"
+	"github.com/mschoenlaub/grip/level"
 )
 
 var goStatsCache *goStats

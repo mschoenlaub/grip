@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/mongodb/grip/message"
+	"github.com/mschoenlaub/grip/message"
 )
 
 // Base provides most of the functionality of the Sender interface,

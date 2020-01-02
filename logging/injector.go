@@ -3,7 +3,7 @@ package logging
 import (
 	"errors"
 
-	"github.com/mongodb/grip/send"
+	"github.com/mschoenlaub/grip/send"
 )
 
 // SetSender swaps send.Sender() implementations in a logging

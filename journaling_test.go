@@ -3,7 +3,7 @@ package grip
 import (
 	"testing"
 
-	"github.com/mongodb/grip/send"
+	"github.com/mschoenlaub/grip/send"
 	"github.com/stretchr/testify/suite"
 )
 

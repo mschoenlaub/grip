@@ -8,7 +8,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/mongodb/grip/message"
+	"github.com/mschoenlaub/grip/message"
 )
 
 const (

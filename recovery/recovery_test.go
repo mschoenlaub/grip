@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mongodb/grip"
-	"github.com/mongodb/grip/logging"
-	"github.com/mongodb/grip/message"
-	"github.com/mongodb/grip/send"
+	"github.com/mschoenlaub/grip"
+	"github.com/mschoenlaub/grip/logging"
+	"github.com/mschoenlaub/grip/message"
+	"github.com/mschoenlaub/grip/send"
 	"github.com/stretchr/testify/suite"
 )
 

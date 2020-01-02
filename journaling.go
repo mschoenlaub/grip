@@ -1,6 +1,6 @@
 package grip
 
-import "github.com/mongodb/grip/logging"
+import "github.com/mschoenlaub/grip/logging"
 
 // The base type for all Journaling methods provided by the Grip
 // package. The package logger uses systemd logging on Linux, when

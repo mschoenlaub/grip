@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/mongodb/grip/message"
+	"github.com/mschoenlaub/grip/message"
 )
 
 const minBufferLength = 5 * time.Second

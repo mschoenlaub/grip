@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/mongodb/grip/level"
+	"github.com/mschoenlaub/grip/level"
 )
 
 // GroupComposer handles groups of composers as a single message,

@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/google/go-github/github"
-	"github.com/mongodb/grip/message"
+	"github.com/mschoenlaub/grip/message"
 	"golang.org/x/oauth2"
 )
 
